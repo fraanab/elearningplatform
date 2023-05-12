@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Courses{% endblock title %}
+{% load static %}
+{% block styles %}
+    <style>
+    	.courses{
+    		padding: 2rem;
+    		width: 100%;height: 100%;
+    		min-height: 75vh;
+    	}
+
+    	.courses ul{
+    		display: flex;flex-direction: column;
+    		width: 100%;height: 100%;
+    		gap: 2rem;
+    		margin-top: 2rem;
+    	}
+    	.courses ul li{
+    		display: flex;flex-direction: row;
+    		width: 100%;
+    		/* height: 100%; */
+    		align-items: start;justify-content: start;
+    		gap: 1rem;
+    		overflow: hidden;
+    	}
+    	.courses ul li:hover img{opacity: 1}
+    	.courses ul li img{
+    		width: 480px;
+    		border-radius: 1rem;
+    		opacity: .8;
+    		transition: .4s;
+    	}
+    	.course-about{display: flex;flex-direction: column;justify-content: space-between;height:270px;width: 100%;}
+    	.course-about-txt{display: flex;flex-direction: column;}
+    	.course-about span{color: var(--c);}
+    	.course-about h3{font-size: 2rem;margin-bottom: 1rem;}	.course-about p{color: #ccc;}
+    	.course-about a{text-align: center;font-size: 2rem;width: 100%;}
+    </style>
+{% endblock styles %}
+
+{% block main %}
+    
+	<section class="courses">
+		<h1>Learn by watching entertaining videos!</h1>
+
+		<ul>
+			{% if available_courses %}
+			    
+				{% for course in available_courses %}
+					
+				<li>
+					<img src="{{course.thumb.url}}" alt="{{course.name}}">
+
+					<div class="course-about">
+						<div class="course-about-txt">
+							<h3>{{course.name}}</h3>
+							<p>{{course.description}}</p>
+						</div>
+						<a href="{% url 'course-page' course.slug %}" class="btn1">Buy this Course <i class="fa-brands fa-paypal"></i></a>    
+					</div>
+				</li>
+
+				{% endfor %}
+
+			{% else %}
+			    <h4>This place is empty. <br> Come back soon...</h4>
+			{% endif %}
+
+			{% if user_courses %}
+
+			{% for course in user_courses %}
+				<li>
+					<img src="{{course.thumb.url}}" alt="{{course.name}}">
+
+					<div class="course-about">
+						<div class="course-about-txt">
+							<h3>{{course.name}}</h3>
+							<p>{{course.description}}</p>
+						</div>
+						<a href="{% url 'course-page' course.slug %}" class="btn3">You own this item <i class="fa-solid fa-arrow-right"></i></a>
+					</div>
+				</li>
+			{% endfor %}
+
+			{% endif %}
+		</ul>
+	</section>
+
+{% endblock main %}

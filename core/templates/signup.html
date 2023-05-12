@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}
+    Sign Up
+{% endblock title %}
+
+{% block styles %}
+	<style>
+		.auth .helptext,
+		.auth br{display:none;}
+
+		.error_msg{
+			color: #c00;
+		}
+		.errorlist li{
+			color: #c00;
+		}
+		.auth h1{color: #fff;}
+	</style>
+{% endblock styles %}
+
+{% block main %}
+    <section class="auth">
+    	<h1>Create an Account</h1>
+    	<form action="." method="POST">
+    		{% csrf_token %}
+
+    		{{form}}
+
+    		{% if error_msg %}
+    		<p class="error_msg">{{error_msg}}</p>
+    		{% endif %}
+    		<div class="auth-actions">
+	    		<button class="btn1">Register</button>
+	    		<p>or</p>
+	    		<a class="btn2" href="{% url 'login' %}">Log in</a>
+    		</div>
+    	</form>
+    </section>
+{% endblock main %}
+
+{% block scripts %}
+{% endblock scripts %}

@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock title %}
+{% load static %}
+{% block styles %}
+    <style>
+    	#admin-link{
+    		width: 100%;text-align: center;
+    		transition:.3s;
+    		margin-top: 1rem;
+    	}
+    	#admin-link:hover{
+    		color: var(--b);
+    	}
+
+    	.dashboard{
+    		width: 100%;min-height: 100%;padding-bottom: 1rem;
+    		display: flex;flex-direction: row;
+    		align-items: start;justify-content: center;
+    		gap: 1rem;
+    		flex-wrap:wrap;
+    	}
+    	.dashboard form{
+    		width: 45vw;
+    		padding: 1rem;
+    		border-radius: 5px;
+    		box-shadow: 0 5px 10px #ccc;
+
+    		display: flex;flex-direction: column;
+    		gap: .5rem;
+    		align-items: center;justify-content: start;
+    	}
+    	textarea{resize: vertical;font-size: 1rem;font-family: sans-serif;padding: 1rem;background: #f1f1f1;border:none;border-radius: 5px;}
+    	.dashboard form input, .dashboard form textarea{
+    		width: 100%;
+    	}
+
+    	.dashboard-b{
+    		width: 100%;height: 100%;
+    		padding: 2rem;
+    		background: var(--b);
+    		margin-top: 2rem;
+    		display: flex;flex-direction: column;
+    		align-items: center;justify-content: center;
+    	}
+    	.dashboard-b-top{
+    		width: 60vw;
+    		display: flex;flex-direction: row;
+    		/* gap: 1px; */
+    		align-items: center;justify-content: space-between;
+    		/* margin: 0 auto; */
+    	}
+    	.dashboard-b-bot{
+    		width: 60vw;
+    		display: flex;flex-direction: row;
+    		gap: 1px;
+    		align-items: center;justify-content: space-between;
+    	}
+    	.dashboard-b-bot li, .dashboard-b-top li{
+    		text-align: center;width: 100%;background: #fff;
+    		padding: 1rem;
+    	}
+    	.dashboard-b-top li:first-of-type{
+    		border-radius: 10px 0 0 0;
+    	}
+    	.dashboard-b-top li:last-of-type{
+    		border-radius: 0 10px 0 0;
+    	}
+    	.dashboard-b-bot li{
+    		border-top: 1px solid var(--b);
+    		font-weight: bold;
+    		font-size: 1.3rem;
+    	}
+    	#myChart{
+    		max-width: 250px;
+    		max-height: 250px;
+    		color: #fff;
+    	}
+    </style>
+{% endblock styles %}
+
+{% block main %}
+    <section class="dashboard">
+
+    	<a href="{% url 'admin:index' %}" id="admin-link">Admin Page <i class="fa-solid fa-arrow-right"></i></a>
+
+    	<form action="{% url 'create_course' %}" method="POST" enctype="multipart/form-data" id="cForm">
+    		<h2>CREATE COURSE</h2>
+
+    		{% csrf_token %}
+
+    		{{course_form}}
+
+    		<button class="btn1">Submit</button>
+    	</form>
+
+    	<form action="{% url 'add_video' %}" method="POST" enctype="multipart/form-data" id="vForm">
+    		<h2>ADD VIDEO TO COURSE</h2>
+
+    		{% csrf_token %}
+    		
+    		{{video_form}}
+    		
+    		<button class="btn1">Submit</button>
+    	</form>
+
+    </section>
+
+    <section class="dashboard-b">
+
+    	<ul class="dashboard-b-top">
+    		<li>Users registered</li>
+    		<li>Courses bought</li>
+    		<li>Total profit</li>
+    	</ul>
+
+    	<ul class="dashboard-b-bot">
+    		<li>{{all_users}}</li>
+    		<li>{{courses_bought}}</li>
+    		<li>$ {{total_profit}}</li>
+    	</ul>
+    	
+    	<canvas id="myChart"></canvas>
+    </section>
+{% endblock main %}
+
+{% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.3.0/chart.min.js" integrity="sha512-mlz/Fs1VtBou2TrUkGzX4VoGvybkD9nkeXWJm3rle0DPHssYYx4j+8kIS15T78ttGfmOjH0lLaBXGcShaVkdkg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.3.0/chart.js" integrity="sha512-L6yov5P1r9QnZX2ZRiq+XBLsm1GQ38zfSDJ6gy3pKmPCqkWvK2nz8Ojlju9q36+zOsMmMB+hYgGrJtJWo4Gy/w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.3.0/helpers.js" integrity="sha512-BQJ3AP+pvkpSDEexjv6OYwGVCVIFo507d09S8pFPTp63+d7YZDrvjoB+4cSPTThQVfQjP6yybIZ6P29ZQGcPvQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.3.0/chart.umd.js" integrity="sha512-CMF3tQtjOoOJoOKlsS7/2loJlkyctwzSoDK/S40iAB+MqWSaf50uObGQSk5Ny/gfRhRCjNLvoxuCvdnERU4WGg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+    <script>
+	  const ctx = document.getElementById('myChart');
+
+	  new Chart(ctx, {
+	    type: 'pie',
+	    data: {
+	      labels: ['Users Registered', 'Courses Bought', 'Profits'],
+	      datasets: [{
+	        label: '# of Votes',
+	        data: [{{all_users}}, {{courses_bought}}, {{total_profit}}],
+	        backgroundColor: [
+	          '#4cc9f0','#f72585','#89fed1'
+	        ],
+	        hoverOffset: 4
+	      }]
+	    }
+	  });
+	</script>
+{% endblock scripts %}

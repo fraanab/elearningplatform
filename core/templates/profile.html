@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}{{request.user.username}}{% endblock title %}
+{% load static %}
+{% block styles %}
+    <style>
+    	#courses-link{
+    		text-decoration: underline;
+    		color: var(--b);
+    	}
+    	.profile{
+    		width: 100%;min-height:80vh;
+    		/* background: var(--a); */
+            background: #111;
+    		padding: 1rem;
+    	}
+    	.profile-title{
+    		text-align: center;margin-bottom: 2rem;
+    		font-size: 3rem;
+    		color: #fff;
+    		text-shadow: 3px 3px #006;
+    	}
+    	.profile-grid{
+    		width: 100%;height: 100%;
+
+    		display: flex;flex-direction: row;
+    		justify-content: center;align-items: start;
+    		flex-wrap:wrap;gap: 1rem;
+    	}
+    	.profile-grid-course{
+    		width: 360px;height: 260px;
+    		overflow: hidden;
+    		box-shadow: 0 3px 10px #003;
+    		border-radius: 5px;
+    		background: #fff;
+    		display: flex;flex-direction: column;
+    		align-items: center;justify-content: start;gap: 1rem;
+    	}
+    	.course-img{
+    		width: 100%;height: 200px;
+    		overflow: hidden;
+    		display: flex;
+    	}
+    	.course-img img{
+    		width: 100%;object-fit:cover;
+    		transition:.5s;
+    	}
+    	.course-img img:hover{
+    		transform: scale(1.1)
+    	}
+    	.course-title{text-align: center;}
+    	.course-title:hover{text-decoration: underline;}
+        .empty{
+            width: 100%;
+            display: flex;flex-direction: column;
+            align-items: center;justify-content: center;
+            color: #fff;
+        }
+    </style>
+{% endblock styles %}
+
+{% block main %}
+    <section class="profile">
+    	<h1 class="profile-title">Here you can find your courses!</h1>
+    	{% if courses %}
+    	<div class="profile-grid">
+    	{% for item in courses %}
+    	
+    		<div class="profile-grid-course">
+    			<a href="{% url 'course-page' item.course.slug %}" class="course-img">
+    				<img src="{{item.course.thumb.url}}" alt="{{item.course.name}}">
+    			</a>
+
+    			<a href="{% url 'course-page' item.course.slug %}" class="course-title">{{item.course.name}}</a>
+    		</div>
+
+    	{% endfor %}
+    	</div>
+    	{% else %}
+        <div class="empty">
+
+        	<p>This place is empty!</p>
+        	<p>
+        		You can view your courses once you <a id="courses-link" href="{% url 'courses-page' %}">purchase one</a>
+        	</p>
+            
+        </div>
+    	{% endif %}
+    </section>
+{% endblock main %}

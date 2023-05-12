@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+{% block title %}{{course.name}}{% endblock title %}
+{% load static %}
+{% block styles %}
+    <style>
+    	.course{
+    		background: #111;
+    		width: 100%;height: 100%;
+    		color: #fff;
+    		padding: 2rem;
+
+    	}
+    	.course-videos{
+    		width: 100%;height: 100%;
+    		display: flex;flex-direction: column;
+    		align-items: center;justify-content: start;
+    		gap: 2rem;
+    	}
+    	.course-video{
+    		/* width: 100%; */
+    		height: 100%;width: initial;
+    		padding: 2rem;
+    		background: var(--b);
+    		border-radius: 5px;
+    		box-shadow: 0 5px 10px #003;
+    		overflow: hidden;
+    	}
+
+    	.course-video video{
+    		border-radius: 5px;
+    		width: 1280px;height: 720px;
+    	}
+    	.course-video h4{font-size: 2rem;margin-top: 1rem;}
+    	.course-video p{color: #eee;}
+    	.number{
+    		color: var(--e);
+    		text-shadow: 2px 2px #003;
+    		font-size: 3rem;
+    	}
+    	.course-title{
+    		width: 1280px;text-align: center;
+			border-top: 1px solid var(--b);
+			padding-top: 1rem;
+			margin:0 auto;
+    	}
+    	.add_video{
+    		display: flex;flex-direction: column;
+    		width: 400px;height: 100%;
+    		overflow: hidden;
+    		align-items: center;justify-content: start;
+    		padding: 1rem;
+    		box-shadow: 0 5px 10px #003;border-radius: 5px;
+    		background: var(--b);
+    	}
+    	.add_video input{color: #000;width: 90%;}
+    	.add_video input[type='file']{
+    		display: none;
+    	}
+    	.add_video textarea,
+    	.add_video select{
+    		width: 90%;
+    		padding: .5rem;
+    		border-radius: 5px;border:none;
+    		background: #f1f1f1;
+    		font-size: 1rem;
+    		resize:vertical;
+    	}
+    	.add_video label:nth-of-type(3){display: none;}
+    	#videoButton{
+    		padding: 1rem;
+    		width: 90%;text-align: center;
+    		color: #fff;transition:.3s;
+    		background: #000;border-radius: 5px;
+    	}
+    	#videoButton:hover{
+    		background: var(--d);
+    	}
+    	.add_video .btn1{margin-top: 1rem;}
+    	.course-description{
+    		width: 50%;
+    		margin: 0 auto;
+    		color: #eee;
+    		margin-top: 1rem;margin-bottom: 2rem;
+    		
+    		padding-bottom: 1rem;
+    		border-bottom: 1px solid var(--b);
+    	}
+    	.comments{
+    		display: flex;flex-direction: column;
+    		width: 100%;
+    		
+    		gap: 1rem;
+    		margin: 1rem 0;
+    	}
+    	.comment{
+    		/* width: 100%; */
+    		position: relative;
+    		display: flex;flex-direction: column;
+    		gap: .5rem;
+    		padding-bottom: .5rem;margin-bottom: .5rem;
+    		border-bottom: 1px solid var(--b);
+    	}
+    	.make-comment{
+    		display: flex;flex-direction: column;
+    		width: 500px;height: 200px;
+    		/* padding: 1rem; */
+    		overflow: hidden;
+    		margin: 0 auto;
+    	}
+    	.make-comment textarea{
+    		padding: .5rem;font-size: 1rem;
+    		font-family: sans-serif;color: #111;
+    		background: #f1f1f1;border:none;
+    		border-radius: 5px;resize:none;
+    		height: 100%;margin-bottom: .5rem;
+    	}
+    	.comment form{
+    		position: absolute;
+    		right: 0;bottom: .5rem;
+    	}
+    </style>
+{% endblock styles %}
+
+{% block main %}
+    <section class="course">
+
+    	<h1 class="course-title">{{course.name}}.</h1>
+    	<p class="course-description">{{course.description}}</p>
+
+    	<div class="course-videos">
+    		
+			{% for video in videos %}
+    		<div class="course-video">
+    			
+				<video class="contentVideo" controls="controls" controlslist="nodownload">
+					<source src="{{video.video_file.url}}" type="video/mp4">
+				</video>
+
+				<h4>{{video.name}}</h4>
+				<p>{{video.description}}</p>
+
+				{% if request.user.is_superuser %}
+				<form action="{% url 'delete_video' video.id %}" method="post">
+					{% csrf_token %}
+					<button class="btn3"><i class="fa-solid fa-trash"></i></button>
+				</form>
+				{% endif %}
+
+    		</div>
+			{% endfor %}
+
+
+
+			<section class="comments">
+				
+				<form action="{% url 'create_comment' course.slug %}" method="post" class="make-comment">
+					{% csrf_token %}
+					<textarea name="message" cols="30" required placeholder="Comment something"></textarea>
+					<button class="btn1">Comment</button>
+				</form>
+
+				{% if comments %}
+				{% for comment in comments %}
+				<div class="comment">
+					<h3>{{comment.user}}</h3>
+					<p>{{comment.message}}</p>
+					<span>{{comment.date}}</span>
+
+					{% if request.user == comment.user or request.user.is_superuser %}
+					<form action="{% url 'delete_comment' comment.id %}" method="post">
+						{% csrf_token %}
+						<button class="btn3"><i class="fa-solid fa-trash"></i></button>
+					</form>
+					{% endif %}
+				</div>
+				{% endfor %}
+				{% else %}
+				<div class="comment">
+					<h3>Comments will show up down here <i class="fa-solid fa-arrow-down"></i></h3>
+				</div>
+				{% endif %}
+
+			</section>
+
+
+
+			{% if request.user.is_superuser %}
+			<form class="add_video" id="add_video_form" action="{% url 'add_video' %}" method="POST" enctype="multipart/form-data">
+				{% csrf_token %}
+
+				<p>Video:</p>
+
+				<a href="#add_video_form" id="videoButton"><i class="fa-solid fa-video"></i></a>
+				{{video_form}}
+
+				<button class="btn1">Submit</button>
+			</form>
+			{% endif %}
+
+    	</div>
+
+    </section>
+{% endblock main %}
+
+{% block scripts %}
+    <script>
+    	const contentVideos = document.querySelectorAll('.contentVideo')
+
+		document.addEventListener('DOMContentLoaded', function() {
+    
+			contentVideos.forEach(function(contentVideo) {
+				contentVideo.addEventListener('contextmenu', function(event) {
+					event.preventDefault();
+				});
+			});
+		
+		});
+    </script>
+    <script>
+		const courseVideos = document.querySelectorAll('.course-video');
+		const videoInput = document.querySelector('#id_video_file')
+		const videoButton = document.querySelector('#videoButton')
+		let count = 1;
+
+		courseVideos.forEach(video => {
+			const p = document.createElement('p');
+			p.classList.add('number');
+			p.textContent = count++;
+			// video.insertAdjacentElement('afterend', p)
+			video.parentNode.insertBefore(p, video);
+		});
+
+		videoButton.addEventListener('click', function(){
+			videoInput.click()
+		})
+    </script>
+{% endblock scripts %}
