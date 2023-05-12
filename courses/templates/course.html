@@ -42,6 +42,12 @@
 			border-top: 1px solid var(--c);
 			padding-top: 2rem;
 		}
+		.test-button{
+			padding: .5rem;border-radius: 5px;
+			background: #400;color: #fff;
+			width: 100%;text-align: center;
+			margin-top: .5rem;
+		}
 	</style>
 {% endblock styles %}
 
@@ -83,14 +89,13 @@
     		<p>$ 25</p>
 
     		<div id="paypal-button-container"></div>
+    		<p class="test-button">Warning: this is a test button!</p>
     	</div>
     </section>
 {% endblock main %}
 
 {% block scripts %}
-	<!-- AQkqf5Ad-9tc8qiT_y5RBBJyQdWcFz_oyzzdgJYNYyVVPJVqewjXFPrzrPXVO1mefUi7gbdxO1S15yrF -->
 	<script src="https://www.paypal.com/sdk/js?client-id=AQkqf5Ad-9tc8qiT_y5RBBJyQdWcFz_oyzzdgJYNYyVVPJVqewjXFPrzrPXVO1mefUi7gbdxO1S15yrF&components=buttons"></script>
-	<!-- <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&components=buttons"></script> -->
     <script>
     	paypal.Buttons({
 			style: {
