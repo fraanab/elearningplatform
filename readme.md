@@ -1,6 +1,7 @@
-[Introduction](./readme.md#introduction)
-[Features I'm working on](./readme.md#features-im-working-on)
-[Installation or Set Up](./readme.md#installation-or-set-up)
+# Table of Contents
+- [Introduction](#introduction)
+- [Features I'm working on](#features-im-working-on)
+- [Installation or Set Up](#installation-or-set-up)
 
 ## Introduction
 
