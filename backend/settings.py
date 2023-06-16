@@ -23,6 +23,7 @@ CSRF_TRUSTED_ORIGINS = [
   'http://127.0.0.1',
   'http://localhost',
   'http://elearningplatform.fraanab.repl.co',
+  'https://elearningplatform.fraanab.repl.co'
 ]
 
 CORS_ALLOW_METHODS = [
@@ -143,8 +144,7 @@ MEDIA_URL = '/media/'
 
 STORAGES = {
   "default": {
-    # "BACKEND": "django.core.files.storage.FileSystemStorage",
-    "BACKEND": 'cloudinary.storage.RawMediaCloudinaryStorage',
+    "BACKEND": "django.core.files.storage.FileSystemStorage",
   },
   "staticfiles": {
     "BACKEND":
