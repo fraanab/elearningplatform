@@ -1,7 +1,0 @@
-tasks:
-
-finish view_course page		done
-
-add some videos				done
-
-make the site responsive	
