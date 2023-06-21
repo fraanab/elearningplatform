@@ -49,12 +49,26 @@
     	}
     	.course-title{text-align: center;}
     	.course-title:hover{text-decoration: underline;}
-        .empty{
-            width: 100%;
-            display: flex;flex-direction: column;
-            align-items: center;justify-content: center;
-            color: #fff;
-        }
+      .empty{
+          width: 100%;
+          display: flex;flex-direction: column;
+          align-items: center;justify-content: center;
+          color: #fff;
+      }
+      .profile h2{color:#fff;}
+      .order-info{
+        background: #fff;
+        padding: 1rem;
+        max-width: 360px;
+        border-radius: 5px;
+      }
+      .order-info p{
+        border-bottom: 1px solid #ccc;
+        padding: 5px 0;
+      }
+      .order-info p span{
+        color: #888;
+      }
     </style>
 {% endblock styles %}
 
@@ -75,6 +89,20 @@
 
     	{% endfor %}
     	</div>
+
+      <h2>Orders information</h2>
+      <div class="profile-grid">
+        {% if orders %}
+        {% for order in orders %}
+          <div class="order-info">
+            <h4>{{ order.user }}</h4>
+            <p><span>Order Id:</span> {{ order.order_id }}</p>
+            <p><span>Name:</span> {{ order.course }}</p>
+            <p><span>Ammount:</span> $ {{ order.course.price }}</p>
+          </div>
+        {% endfor %}
+        {% endif %}
+      </div>
     	{% else %}
         <div class="empty">
 

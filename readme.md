@@ -11,7 +11,6 @@
 
 ## Features Im working on
 
-- Users ability to view their payment history.
 - Users can track where they left off.
 - Forgot password feature.
 
